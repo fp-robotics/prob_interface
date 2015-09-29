@@ -1,5 +1,5 @@
 # prob_interface
-A repository for estalishing an interface to the P-Rob in ROS.
+A repository for establishing an interface to the P-Rob in ROS.
 
 ## Packages
 **prob_interface** - base class/package contains the prob_server that builds the connection to the P-Rob and handles all the traffic between ROS and the P-Rob
