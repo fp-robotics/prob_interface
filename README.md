@@ -41,7 +41,7 @@ None at the moment
 * `get_connection_info` ([prob_msgs/GetInfo]) - Get the Connection Status of the P-Rob.
 * `get_status_info` ([prob_msgs/GetInfo]) - Get the Status Info of the P-Rob.
 * `get_all_status` ([prob_msgs/GetInfoString]) - Get all the Status infos.
-* 
+
 #### Run
 ```
 rosurn prob_interface prob_server.py myp_host_ip
