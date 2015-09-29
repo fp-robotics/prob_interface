@@ -1,0 +1,9 @@
+string model
+string kind
+string channel_name
+string channel_type
+string protocol
+string host_id
+string baudrate
+---
+uint8 res

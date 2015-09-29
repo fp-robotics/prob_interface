@@ -1,0 +1,8 @@
+uint8 axis
+float32 deg
+float32 vel
+float32 acc
+bool block
+bool relative
+---
+uint8 res

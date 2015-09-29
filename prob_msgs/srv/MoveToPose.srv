@@ -1,0 +1,6 @@
+string name
+float32 vel
+float32 acc
+bool block
+---
+uint8 res
