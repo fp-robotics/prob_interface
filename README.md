@@ -44,7 +44,7 @@ None at the moment
 
 #### Run
 ```
-rosurn prob_interface prob_server.py myp_host_ip
+rosrun prob_interface prob_server.py myp_host_ip
 ```
 
 ### execute_script
@@ -56,7 +56,7 @@ on the P-Rob
 
 #### Run
 ```
-rosurn prob_interface execute_script.py ~/scripts/test_script.script
+rosrun prob_interface execute_script.py ~/scripts/test_script.script
 ```
 
 ### client_demo
@@ -72,7 +72,7 @@ Is a demo node which takes the same arguments as move_joint and executes this co
 
 #### Run
 ```
-rosurn prob_interface client_demo.py 1 50 50 50
+rosrun prob_interface client_demo.py 1 50 50 50
 ```
 
 ### prob_plot
