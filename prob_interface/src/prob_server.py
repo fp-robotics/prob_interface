@@ -489,10 +489,10 @@ def start_server():
     robot_arm = RobotHandler()
 
     # initialize and calibrate robot
-    #robot_arm.initialize("PRob1Uplus", "real")
-    #robot_arm.wait_for_robot()
-    #robot_arm.calibrate(True)
-    #robot_arm.wait_for_robot()
+    robot_arm.initialize("PRob1Uplus", "real")
+    robot_arm.wait_for_robot()
+    robot_arm.calibrate(True)
+    robot_arm.wait_for_robot()
     print("Connected to PRob.")
     print("Robot Status:")
     print("_______________________________________________________")

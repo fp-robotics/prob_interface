@@ -75,6 +75,23 @@ Is a demo node which takes the same arguments as move_joint and executes this co
 rosurn prob_interface client_demo.py 1 50 50 50
 ```
 
+### prob_plot
+Publishes an arrow marker, which can be plotted in rviz. This arrow shows the position and orientation of the tool center point
+
+#### Published Topics
+* `connection` ([visualization_msgs/Marker]) - Arrow Marker for rviz
+
+#### Run
+Terminal 1:
+```
+rviz
+```
+
+Terminal 2:
+```
+rosrun prob_interface prob_plot.py
+```
+
 [std_srvs/Empty]: http://docs.ros.org/indigo/api/std_srvs/html/srv/Empty.html
 [prob_msgs/MoveJoint]: https://github.com/fp-robotics/prob_interface/blob/master/prob_msgs/srv/MoveJoint.srv
 [prob_msgs/MoveTool]: https://github.com/fp-robotics/prob_interface/blob/master/prob_msgs/srv/MoveTool.srv
@@ -92,3 +109,4 @@ rosurn prob_interface client_demo.py 1 50 50 50
 [prob_msgs/GetInfoString]:https://github.com/fp-robotics/prob_interface/blob/master/prob_msgs/srv/GetInfoString.srv
 [prob_msgs/Status]: https://github.com/fp-robotics/prob_interface/blob/master/prob_msgs/msg/Status.msg
 [prob_msgs/Position]: https://github.com/fp-robotics/prob_interface/blob/master/prob_msgs/msg/Position.msg
+[visualization_msgs/Marker]: http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html

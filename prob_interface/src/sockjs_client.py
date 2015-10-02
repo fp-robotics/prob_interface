@@ -87,7 +87,7 @@ class SockJSClient(Thread):
                         for obj in msg:
                             msg = json.loads(obj)
                             self.status.update(msg)
-                        # print("Status: ", self.status)
+                        #print("Status: ", self.status)
 
                 if not self.running:
                     return 0
