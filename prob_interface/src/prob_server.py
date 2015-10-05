@@ -30,7 +30,7 @@ def handle_move_to_pose(req):
   return 1
   
 def handle_wait_for_robot(req):
-  print("wait_joint(%s)"%(bool(req.axis)))
+  print("wait_joint(%s)"%(bool(req.show)))
   robot_arm.wait_for_robot( bool(req.show))
   return 1
   
@@ -489,10 +489,10 @@ def start_server():
     robot_arm = RobotHandler()
 
     # initialize and calibrate robot
-    robot_arm.initialize("PRob1Uplus", "real")
-    robot_arm.wait_for_robot()
-    robot_arm.calibrate(True)
-    robot_arm.wait_for_robot()
+    #robot_arm.initialize("PRob1Uplus", "real")
+    #robot_arm.wait_for_robot()
+    #robot_arm.calibrate(True)
+    #robot_arm.wait_for_robot()
     print("Connected to PRob.")
     print("Robot Status:")
     print("_______________________________________________________")

@@ -65,6 +65,17 @@ def test_script(script_code=''):
 	except rospy.ServiceException, e:
 		print "Service call failed: %s"%e
 
+# ROS wrapper for wait_for_robot
+def wait_for_robot(show = False):
+	rospy.wait_for_service('wait_for_robot')
+	try:
+		wait_for_robot = rospy.ServiceProxy('wait_for_robot', WaitForRobot)
+		resp1 = wait_for_robot(show)
+		return resp1.res
+	except rospy.ServiceException, e:
+		print "Service call failed: %s"%e
+
+
 # ROS wrapper for execute_script
 def execute_script(script_id=1):
 	rospy.wait_for_service('execute_script')
