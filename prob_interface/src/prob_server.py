@@ -145,13 +145,13 @@ class RobotHandler:
         #print("Position: ", position)
         return position
         
-    def get_euler_position(self):
-        position = myp.get_status("euler_position")
+    def get_posture(self):
+        position = myp.get_status("current_posture")
         #print("Euler Position: ", position)
         return position
         
     def get_current(self):
-        current = myp.get_status("current")
+        current = myp.get_status("current_current")
         #print("Current: ", current)
         return current
 

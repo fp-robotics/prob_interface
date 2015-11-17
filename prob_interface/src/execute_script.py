@@ -4,7 +4,6 @@ import sys
 import rospy
 
 from client_functions import *
-from prob_interface.srv import *
 
 def usage():
     return "%s [filename]"%sys.argv[0]
