@@ -101,18 +101,14 @@ def handle_get_all_status(req):
 
 class RobotHandler:
 
-    # TODO: STATUS_FUNCTIONS are not working correctly yet!
-
     # 0: 'not Initialized, not Calibrated'
     # 1: 'Initializing, not Calibrated'
     # 2: 'Initialized, not Calibrated'
     # 3: 'Initialized, Calibrating'
     # 4: 'Initialized, Calibrated'
-    def get_connection_info(self):
-        connection = myp.get_status("connection_info")
-        #print("Connection Info: ", connection)
-        return connection
-    
+    @staticmethod
+    def get_connection_info():
+        return myp.get_status("connection_info")
     # 0: 'None'
     # 1: 'Ready'
     # 2: 'Stopped'
@@ -120,67 +116,80 @@ class RobotHandler:
     # 4: 'Running'
     # 5: 'Released'
     # 6: 'Error'
-    def get_status_info(self):
-        status = myp.get_status("status_info")
-        #print("Status Info: ", status)
-        return status
-      
-    def get_message_info(self):
-        message = myp.get_status("message_info")
-        #print("Message Info: ", message)
-        return message
-        
-    def get_application_info(self):
-        message = myp.get_status("application_info")
-        #print("Application Info: ", message)
-        return message
-      
-    def get_actuator_release_state(self):
-        state = myp.get_status("actuator_release_state")
-        #print("Actuator Release State: ", state)
-        return state
-        
-    def get_position(self):
-        position = myp.get_status("current_pose")
-        #print("Position: ", position)
-        return position
-        
-    def get_posture(self):
-        position = myp.get_status("current_posture")
-        #print("Euler Position: ", position)
-        return position
-        
-    def get_current(self):
-        current = myp.get_status("current_current")
-        #print("Current: ", current)
-        return current
+
+    @staticmethod
+    def get_status_info():
+        return myp.get_status("status_info")
+
+    @staticmethod
+    def get_message_info():
+        return myp.get_status("message_info")
+
+    @staticmethod
+    def get_application_info():
+        return myp.get_status("application_info")
+
+@staticmethod
+    def get_actuator_release_state():
+        return [not state for state in myp.get_status("actuator_release_state")]
+
+    @staticmethod
+    def get_position():
+        return myp.get_status("current_pose")
+
+    @staticmethod
+    def get_actuator_angles():
+        return myp.get_status("current_actuator_angles")
+
+    @staticmethod
+    def get_posture():
+        return myp.get_status("current_posture")
+
+    @staticmethod
+    def get_current():
+        return myp.get_status("current_current")
+
+    @staticmethod
+    def get_print_info():
+        return myp.get_status("print_info")
+
+    @staticmethod
+    def get_kinematic_indices():
+        return myp.get_status("kinematic_indices")
 
     #####################################
     # initialization functions          #
     #####################################
-    def initialize(self, model="PRob1R", kind="real", channel_name="1",
-                   channel_type="PEAK_SYS_PCAN_USB", protocol="TMLCAN", host_id="10", baudrate="500000"):
-        if self.get_connection_info() == 0:
+    @staticmethod
+    def initialize(model="PRob2R", kind="real", channel_name="/dev/pcanpci0",
+                   channel_type="PEAK_SYS_PCAN_PCI", protocol="TMLCAN", host_id="10", baudrate="500000"):
+        if RobotHandler.get_connection_info() == 0:
             cmd = "\"{"
             cmd += "\\\"action\\\":\\\"initialize\\\","
-            cmd += "\\\"model\\\":\\\""+model+"\\\","
-            cmd += "\\\"robot_kind\\\":\\\""+kind+"\\\""
+            cmd += "\\\"model\\\":\\\"" + model + "\\\","
+            cmd += "\\\"robot_kind\\\":\\\"" + kind + "\\\""
             if kind == 'real':
                 cmd += ","
-                cmd += "\\\"channel_name\\\":\\\""+channel_name+"\\\","
-                cmd += "\\\"channel_type\\\":\\\""+channel_type+"\\\","
-                cmd += "\\\"protocol\\\":\\\""+protocol+"\\\","
-                cmd += "\\\"host_id\\\":"+host_id+","
-                cmd += "\\\"baudrate\\\":"+baudrate
+                cmd += "\\\"channel_name\\\":\\\"" + channel_name + "\\\","
+                cmd += "\\\"channel_type\\\":\\\"" + channel_type + "\\\","
+                cmd += "\\\"protocol\\\":\\\"" + protocol + "\\\","
+                cmd += "\\\"host_id\\\":" + host_id + ","
+                cmd += "\\\"baudrate\\\":" + baudrate
             cmd += "}\""
-            #print(cmd)
             myp.send(cmd)
             return 1
         return 0
-        
-    def finalize(self):
-        cmd =  "\"{"
+
+    @staticmethod
+    def finalize():
+        cmd = "\"{"
         cmd += "\\\"action\\\":\\\"finalize\\\""
+        cmd += "}\""
+        myp.send(cmd)
+        time.sleep(0.5)
+        cmd = "\"{"
+        cmd += "\\\"action\\\":\\\"answer_dialog\\\","
+        cmd += "\\\"dialog_answer\\\":true"
         cmd += "}\""
         myp.send(cmd)
         return 1
@@ -188,29 +197,33 @@ class RobotHandler:
     #####################################
     # status functions                  #
     #####################################
-    def pause(self):
+    @staticmethod
+    def pause():
         cmd = "\"{"
         cmd += "\\\"action\\\":\\\"pause\\\""
         cmd += "}\""
         myp.send(cmd)
         return 1
 
-    def resume(self):
-        cmd =  "\"{"
+    @staticmethod
+    def resume():
+        cmd = "\"{"
         cmd += "\\\"action\\\":\\\"resume\\\""
         cmd += "}\""
         myp.send(cmd) 
         return 1
-        
-    def stop(self):
-        cmd =  "\"{"
+
+    @staticmethod
+    def stop():
+        cmd = "\"{"
         cmd += "\\\"action\\\":\\\"stop\\\""
         cmd += "}\""
         myp.send(cmd) 
         return 1
-        
-    def recover(self):
-        cmd =  "\"{"
+
+    @staticmethod
+    def recover():
+        cmd = "\"{"
         cmd += "\\\"action\\\":\\\"recover\\\""
         cmd += "}\""
         myp.send(cmd)
@@ -219,226 +232,195 @@ class RobotHandler:
     #####################################
     # control functions                 #
     #####################################
-    def calibrate(self, use_existing=True):
-        if self.get_connection_info() == 2:
-            cmd = "\"{"
-            cmd += "\\\"action\\\": \\\"calibrate\\\","
-            cmd += "\\\"use_existing\\\": "+str(use_existing).lower()
-            cmd += "}\""
-            myp.send(cmd)
-            return 1
-        return 0
-        
-    def release(self, joint_id=[1]):
-        # TODO: make release all joints to default
-        print(joint_id)
+    @staticmethod
+    def calibrate(use_existing=True):
+        # if RobotHandler.get_connection_info() == 2:
+        cmd = "\"{"
+        cmd += "\\\"action\\\": \\\"calibrate\\\","
+        cmd += "\\\"use_existing\\\": " + str(use_existing).lower()
+        cmd += "}\""
+        myp.send(cmd)
+        return 1
+
+    @staticmethod
+    def release(joint_id=None):
+        if not joint_id:
+            if len(RobotHandler.get_kinematic_indices()) == 6:
+                joint_id = [1,2,3,4,5,6]
+            elif len(RobotHandler.get_kinematic_indices()) == 5:
+                joint_id = [1,2,3,4,5]
+            elif len(RobotHandler.get_kinematic_indices()) == 4:
+                joint_id = [1,2,3,4]
         length = len(joint_id)
         processed_string = '['
-        for i in range(0, length-1):
+        for i in range(0, length - 1):
             processed_string += "\\\"" + str(joint_id[i]) + "\\\","
-        processed_string += "\\\"" + str(joint_id[length-1]) + "\\\"]"
+        processed_string += "\\\"" + str(joint_id[length - 1]) + "\\\"]"
 
         cmd = "\"{"
         cmd += "\\\"action\\\": \\\"release\\\","
-        cmd += "\\\"joint_ids\\\": "+processed_string
+        cmd += "\\\"joint_ids\\\": " + processed_string
         cmd += "}\""
         myp.send(cmd)
         return 1
-        
-    def hold(self, joint_id=[1]):
-        # TODO: make hold all joints to default
+
+    @staticmethod
+    def hold(joint_id=None):
+        if not joint_id:
+            if len(RobotHandler.get_kinematic_indices()) == 6:
+                joint_id = [1,2,3,4,5,6]
+            elif len(RobotHandler.get_kinematic_indices()) == 5:
+                joint_id = [1,2,3,4,5]
+            elif len(RobotHandler.get_kinematic_indices()) == 4:
+                joint_id = [1,2,3,4]
         length = len(joint_id)
         processed_string = '['
-        for i in range(0, length-1):
+        for i in range(0, length - 1):
             processed_string += "\\\"" + str(joint_id[i]) + "\\\","
-        processed_string += "\\\"" + str(joint_id[length-1]) + "\\\"]"
+        processed_string += "\\\"" + str(joint_id[length - 1]) + "\\\"]"
 
         cmd = "\"{"
         cmd += "\\\"action\\\": \\\"hold\\\","
-        cmd += "\\\"joint_ids\\\": "+processed_string
+        cmd += "\\\"joint_ids\\\": " + processed_string
         cmd += "}\""
         myp.send(cmd)
         return 1
 
-    def execute_script(self, script_id=1):
-        cmd =  "\"{"
+    @staticmethod
+    def execute_script(script_name):
+        script_id = RobotHandler._get_id_from_name(script_name, "scripts")
+        cmd = "\"{"
         cmd += "\\\"action\\\":\\\"execute_script\\\","
-        cmd += "\\\"script_id\\\":"+str(script_id)
+        cmd += "\\\"script_id\\\":" + str(script_id)
         cmd += "}\""
         myp.send(cmd)
         return 1
-        
-    def test_script(self, script_code=""):
-        cmd =  "\"{"
+
+    @staticmethod
+    def test_script(script_code=""):
+        cmd = "\"{"
         cmd += "\\\"action\\\":\\\"test_script\\\","
         cmd += "\\\"script_id\\\":0,"
-        cmd += "\\\"script_code\\\":\\\""+script_code+"\\\""
+        cmd += "\\\"script_code\\\":\\\"" + script_code + "\\\""
         cmd += "}\""
-        #print(cmd)
         myp.send(cmd)
-        #self.wait_for_robot()
         return 1
-
-    # def move_to_pose(self, pose_id=1, velocity=15):
-    #    cmd =  "\"{"
-    #    cmd += "\\\"action\\\":\\\"move_to_pose\\\","
-    #    cmd += "\\\"pose_id\\\":"+str(pose_id)+","
-    #    cmd += "\\\"velocity\\\":"+str(velocity)
-    #    cmd += "}\""
-    #    myp.send(cmd)
-    #    return 1
-    # TODO: tcp_move
-    # def tcp_move(self):
-    # data = {
-    #         action: 'tcp_move',
-    #         x: parseFloat(x),
-    #         y: parseFloat(y),
-    #         z: parseFloat(z),
-    #         orientation: orientation,
-    #         only_position: $('#only_position').prop('checked'),
-    #         linear: $('#tcp_linear').prop('checked'),
-    #         velocity: parseFloat(v)
-    #     };
-    #    return 0
-    #def play_path(self):
-    #    return 0    
-    #def pick_and_place(self):
-    #    return 0
-    #def record_sample(self):
-    #    return 0                
     
     #####################################
     # script commands                   #
     #####################################
-    def move_joint(self, *arguments):
-        #print("move_joint"+str(arguments))
-        return self.test_script("move_joint"+str(arguments))
-    def move_joint_monitored(self, *arguments):
-        return self.test_script("move_joint"+str(arguments))
-    def move_tool(self, *arguments):
-        return self.test_script("move_tool"+str(arguments))
-    def move_linear(self, *arguments):
-        return self.test_script("move_linear"+str(arguments))
-    def move_to_pose(self, *arguments):
-        return self.test_script("move_to_pose"+str(arguments))
-    def open_gripper(self, *arguments):
-        return self.test_script("open_gripper"+str(arguments))
-    def close_gripper(self, *arguments):
-        return self.test_script("close_gripper"+str(arguments))
-    def path_move(self, *arguments):
-        return self.test_script("path_move"+str(arguments))
-    def play_path(self, *arguments):
-        return self.test_script("play_path"+str(arguments))
-    def reactive_spline(self, *arguments):
-        return self.test_script("reactive_spline"+str(arguments))
+    @staticmethod
+    def move_joint(*arguments):
+        return RobotHandler.test_script("move_joint" + str(arguments))
 
+    @staticmethod
+    def move_tool(*arguments):
+        return RobotHandler.test_script("move_tool" + str(arguments))
+
+    @staticmethod
+    def move_to_pose(*arguments):
+        return RobotHandler.test_script("move_to_pose" + str(arguments))
+
+    @staticmethod
+    def open_gripper(*arguments):
+        return RobotHandler.test_script("open_gripper" + str(arguments))
+
+    @staticmethod
+    def close_gripper(*arguments):
+        return RobotHandler.test_script("close_gripper" + str(arguments))
+
+    @staticmethod
+    def play_path(*arguments):
+        return RobotHandler.test_script("play_path" + str(arguments))
 
     #####################################
     # database functions                #
     #####################################
-    def request_script(self, script_id=1):
-        cmd =  "\"{"
-        cmd += "\\\"action\\\":\\\"get_script\\\","
-        cmd += "\\\"script_id\\\":\\\""+str(script_id)+"\\\""
-        cmd += "}\""
-        myp.send(cmd)
-        return 1
-        
-    def get_script(self, script_id=1):
-        myp.remove_status("one_script")
-        self.request_script(script_id)
-        script = myp.get_status("one_script")
-        counter = 0
-        while (script == 0):
-            time.sleep(0.001) 
-            script = myp.get_status("one_script")
-            counter += 1
-            if (counter > 100):
-                print("script == 0!")
-                return 0
-        return script
 
-    def get_scripts(self):
+    @staticmethod
+    def get_script(script_name):
+        for script in myp.get_status("scripts"):
+            if script["name"] == script_name:
+                return script["code"]
+        return 0
+
+    @staticmethod
+    def get_scripts():
         scripts = myp.get_status("scripts")
-        print("Scripts: ", scripts)
         return scripts
-          
-    def get_script_id(self, name):
-        scripts = myp.get_status("scripts")
-        for script in scripts:
-            if script[1] == name:
-              return script[0]
-        return 0
-        
-    def save_script(self, script_name="", script_code=""):
-        cmd =  "\"{"
+
+    @staticmethod
+    def save_script(script_name="", script_code=""):
+        # edit script
+        cmd = "\"{"
+        cmd += "\\\"action\\\":\\\"edit_script\\\","
+        cmd += "\\\"script_id\\\":\\\"" + str(0) + "\\\","
+        cmd += "\\\"editor_id\\\":\\\"edit_script_0_0\\\","
+        cmd += "}\""
+        myp.send(cmd)
+        # update script
+        cmd = "\"{"
+        cmd += "\\\"action\\\":\\\"update_script\\\","
+        cmd += "\\\"script_name\\\":\\\"" + script_name + "\\\","
+        cmd += "\\\"editor_id\\\":\\\"edit_script_0_0\\\","
+        cmd += "}\""
+        myp.send(cmd)
+        # save the script
+        cmd = "\"{"
         cmd += "\\\"action\\\":\\\"save_script\\\","
-        cmd += "\\\"script_name\\\":\\\""+script_name+"\\\","
-        cmd += "\\\"script_code\\\":\\\""+script_code+"\\\""
+        cmd += "\\\"editor_id\\\":\\\"edit_script_0_0\\\","
+        cmd += "\\\"script_code\\\":\\\"" + script_code + "\\\""
         cmd += "}\""
         myp.send(cmd)
         return 1
-        
-    def delete_script(self, script_id=1):
-        cmd =  "\"{"
+
+    @staticmethod
+    def delete_script(script_id=1):
+        cmd = "\"{"
         cmd += "\\\"action\\\":\\\"delete_script\\\","
-        cmd += "\\\"script_id\\\":\\\""+str(script_id)+"\\\""
+        cmd += "\\\"script_id\\\":\\\"" + str(script_id) + "\\\""
         cmd += "}\""
         myp.send(cmd)
         return 1
-        
-    def get_poses(self):
+
+    @staticmethod
+    def get_pose(pose_name):
         poses = myp.get_status("poses")
-        print("Poses: ", poses)
-        return poses
-        
-    def get_paths(self):
-        paths = myp.get_status("paths")
-        print("Paths: ", paths)
-        return paths
-        
-    #TODO: needs to be implemented...
-    def record_path(self):
-        return 0  
-    #TODO: needs to be implemented...    
-    def stop_record_path(self):
-        return 0  
-    #TODO: needs to be implemented...    
-    def delete_path(self):
-        return 0 
-    #TODO: needs to be implemented...    
-    def save_pose(self):
-        return 0 
-    #TODO: needs to be implemented...    
-    def delete_pose(self):
+        for pose in poses:
+            if pose["name"] == pose_name:
+                return pose
         return 0
 
-    def wait_for_robot(self, show=False):
-        counter = 0
-        while self.get_status_info() != 1:
-            time.sleep(0.1)
-            if counter % 20 == 0 and show:
-                print("Robot not ready yet!")
-            counter += 1
+    @staticmethod
+    def get_poses():
+        poses = myp.get_status("poses")
+        return poses
 
-    #def get_lesson(self):
-    #    return 0   
-    #def save_lesson(self):
-    #    return 0   
-    #def delete_lesson(self):
-    #    return 0     
-    #def discard_samples(self):
-    #    return 0  
-    #def save_samples_and_train(self):
-    #    return 0     
-    #def get_item(self):
-    #    return 0     
-    #def save_item(self):
-    #    return 0   
-    #def delete_item(self):
-    #    return 0          
-    #def answer_dialog(self):
-    #    return 0           
+    @staticmethod
+    def get_path(path_name):
+        paths = myp.get_status("paths")
+        for path in paths:
+            if path["name"] == path_name:
+                return path
+        return 0
+
+    @staticmethod
+    def get_paths():
+        paths = myp.get_status("paths")
+        return paths
+
+    @staticmethod
+    def wait_for_robot():
+        while RobotHandler.get_status_info() == 4:
+            time.sleep(0.1)
+
+    @staticmethod
+    def _get_id_from_name(name, table_name):
+        elements = myp.get_status(table_name)
+        for element in elements:
+            if element["name"] == name:
+                return element["id"]
+        return 0
     
 
     def publisher(self):
