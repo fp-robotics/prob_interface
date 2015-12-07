@@ -60,7 +60,6 @@ class SockJSClient(Thread):
 
             while data:
                 data = sock.recv(1)
-
                 if data == b'o':
                     self.MessageCounter = 0
                     #print("connected to API")
@@ -117,7 +116,6 @@ class SockJSClient(Thread):
                 conn.close()
 
     def send(self, message):
-
         conn = httplib.HTTPConnection(self._host, self._port)
         url = '/'.join([self._prefix, self._r1, self._conn_id, 'xhr_send'])
         # print("Send to: ", url)
