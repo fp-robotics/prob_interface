@@ -7,22 +7,25 @@ from client_functions import *
 
 
 def usage():
-    return "%s [robot_model='PRob1R' use_existing=True]"%sys.argv[0]
+    return "%s [robot_model='PRob2R' use_existing=True]"%sys.argv[0]
 
 if __name__ == "__main__":
     arg_length = len(sys.argv)
     model = 'PRob1R'
     existing = True
-    if 1 <= arg_length <= 3:
+    channel_name = '/dev/pcanpci0'
+    if 1 <= arg_length <= 4:
 	if arg_length > 1:
 	    model = str(sys.argv[1])
 	if arg_length > 2:
 	    existing = bool(sys.argv[2])
-	else:
-	    print usage()
-	    sys.exit(1)
+	if arg_length > 3:
+	    channel_name = str(sys.argv[3])
+    else:
+	print usage()
+	sys.exit(1)
     # initialize and calibrate robot
-    initialize(model, "real")
+    initialize(model, "real", channel_name)
     wait_for_robot()
     calibrate(existing)
     wait_for_robot()

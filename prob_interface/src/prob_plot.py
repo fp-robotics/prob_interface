@@ -42,7 +42,7 @@ def callback(data):
 def listener():
 
 	rospy.init_node('listener', anonymous=True)
-	rospy.Subscriber("position", Position, callback)
+	rospy.Subscriber("position", Array, callback)
 	rospy.spin()
 
 if __name__ == "__main__":
