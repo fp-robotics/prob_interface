@@ -16,11 +16,11 @@ def move_joint(axis, deg, velocity=None, acceleration=None, block=True, relative
         print "Service call failed: %s"%e
 
 # ROS wrapper for move_tool
-def move_tool(x, y, z, phi=None, theta=None, psi=None, velocity=None, acceleration=None, velocity_rot=None, acceleration_rot=None, block=True, relative=False):
+def move_tool(x, y, z, orientation=None, velocity=None, acceleration=None, velocity_rot=None, acceleration_rot=None, block=True, relative=None, frame="base"):
 	rospy.wait_for_service('move_tool')
 	try:
 		move_tool = rospy.ServiceProxy('move_tool', MoveTool)
-		resp1 = move_tool(x, y, z, phi, theta, psi, velocity, acceleration, velocity_rot, acceleration_rot, block, relative)
+		resp1 = move_tool(x, y, z, orientation, velocity, acceleration, velocity_rot, acceleration_rot, block, relative, frame)
 		return resp1.res
 	except rospy.ServiceException, e:
 		print "Service call failed: %s"%e
@@ -36,8 +36,10 @@ def move_to_pose(name, velocity=None, acceleration=None, block=True):
 		print "Service call failed: %s"%e
 	
 # ROS wrapper for initialization
-def initialize(model='PRob1R', kind='real', channel_name='1', channel_type='PEAK_SYS_PCAN_USB', protocol='TMLCAN', host_id='10', baudrate='500000'):
+def initialize(model='PRob2R', kind='real', channel_name='/dev/pcanpci0', channel_type='PEAK_SYS_PCAN_PCI', protocol='TMLCAN', host_id='10', baudrate='500000'):
 	rospy.wait_for_service('initialize')
+	if channel_name != '/dev/pcanpci0':
+	    channel_type='PEAK_SYS_PCAN_USB'
 	try:
 		initialize = rospy.ServiceProxy('initialize', Initialize)
 		resp1 = initialize(model, kind, channel_name, channel_type, protocol, host_id, baudrate)
@@ -66,11 +68,20 @@ def test_script(script_code=''):
 		print "Service call failed: %s"%e
 
 # ROS wrapper for wait_for_robot
-def wait_for_robot(show = False):
+def wait_for_robot():
 	rospy.wait_for_service('wait_for_robot')
 	try:
-		wait_for_robot = rospy.ServiceProxy('wait_for_robot', WaitForRobot)
-		resp1 = wait_for_robot(show)
+		wait_for_robot = rospy.ServiceProxy('wait_for_robot', Empty)
+		resp1 = wait_for_robot(1)
+		return resp1.res
+	except rospy.ServiceException, e:
+		print "Service call failed: %s"%e
+# ROS wrapper for wait_for_robot
+def finalize():
+	rospy.wait_for_service('finalize')
+	try:
+		finalize = rospy.ServiceProxy('finalize', Empty)
+		resp1 = finalize(1)
 		return resp1.res
 	except rospy.ServiceException, e:
 		print "Service call failed: %s"%e
@@ -87,7 +98,7 @@ def execute_script(script_id=1):
 		print "Service call failed: %s"%e
 
 # ROS wrapper for release
-def release(joint_id=[1]):
+def release(joint_id=None):
 	joint_id = str(joint_id)
 	joint_id = joint_id.replace('[','')
 	joint_id = joint_id.replace(']','')
@@ -102,7 +113,7 @@ def release(joint_id=[1]):
 		print "Service call failed: %s"%e
 
 # ROS wrapper for hold
-def hold(joint_id = [1]):
+def hold(joint_id = None):
 	joint_id = str(joint_id)
 	joint_id = joint_id.replace('[','')
 	joint_id = joint_id.replace(']','')
@@ -165,6 +176,66 @@ def get_connection_info():
 	try:
 		get_connection_info = rospy.ServiceProxy('get_connection_info', GetInfo)
 		resp1 = get_connection_info()
+		return resp1.res
+	except rospy.ServiceException, e:
+		print "Service call failed: %s"%e
+
+# ROS wrapper for get_application_info
+def get_application_info():
+	rospy.wait_for_service('get_application_info')
+	try:
+		get_applicaiton_info = rospy.ServiceProxy('get_connection_info', GetInfo)
+		resp1 = get_application_info()
+		return resp1.res
+	except rospy.ServiceException, e:
+		print "Service call failed: %s"%e
+
+# ROS wrapper for get_print_info
+def get_print_info():
+	rospy.wait_for_service('get_connection_info')
+	try:
+		get_print_info = rospy.ServiceProxy('get_print_info', GetInfoString)
+		resp1 = get_print_info()
+		return resp1.res
+	except rospy.ServiceException, e:
+		print "Service call failed: %s"%e
+
+# ROS wrapper for get_actuator_release_state
+def get_actuator_release_state():
+	rospy.wait_for_service('get_actuator_release_state')
+	try:
+		get_actuator_release_state = rospy.ServiceProxy('get_actuator_release_state', GetBoolArray)
+		resp1 = get_actuator_release_state()
+		return resp1.res
+	except rospy.ServiceException, e:
+		print "Service call failed: %s"%e
+
+# ROS wrapper for get_kinematic_indices
+def get_kinematic_indices():
+	rospy.wait_for_service('get_kinematic_indices')
+	try:
+		get_kinematic_indices = rospy.ServiceProxy('get_kinematic_indices', GetArray)
+		resp1 = get_kinematic_indices()
+		return resp1.res
+	except rospy.ServiceException, e:
+		print "Service call failed: %s"%e
+
+# ROS wrapper for get_actuator_indices
+def get_actuator_indices():
+	rospy.wait_for_service('get_actuator_indices')
+	try:
+		get_actuator_indices = rospy.ServiceProxy('get_actuator_indices', GetArray)
+		resp1 = get_actuator_indices()
+		return resp1.res
+	except rospy.ServiceException, e:
+		print "Service call failed: %s"%e
+
+# ROS wrapper for get_message_info
+def get_message_info():
+	rospy.wait_for_service('get_message_info')
+	try:
+		get_message_info = rospy.ServiceProxy('get_message_info', GetInfoString)
+		resp1 = get_message_info()
 		return resp1.res
 	except rospy.ServiceException, e:
 		print "Service call failed: %s"%e
