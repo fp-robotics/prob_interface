@@ -28,3 +28,6 @@
 *.app
 *~
 *.pyc
+
+# ItelliJ settings
+.idea

@@ -22,7 +22,9 @@ None at the moment
 #### Published Topics
 * `connection` ([prob_msgs/Status]) - Connection Info of the P-Rob
 * `status` ([prob_msgs/Status]) - Status Info of the P-Rob
-* `position`([prob_msgs/Position]) - Position of the P-Rob (X|Y|Z|Roll|Pich|Yaw)
+* `position`([prob_msgs/Array]) - Position of the P-Rob (X|Y|Z|Roll|Pich|Yaw)
+* `current`([prob_msgs/Array]) - Currents in the joints of the P-Rob (1|2|3|4|5|6|7)
+* `actuator_angles`([prob_msgs/Array]) - Angles of the joints of the P-Rob (1|2|3|4|5|6|7)
 
 #### Services
 * `move_joint` ([prob_msgs/MoveJoint]) - move joint.
@@ -41,6 +43,10 @@ None at the moment
 * `get_connection_info` ([prob_msgs/GetInfo]) - Get the Connection Status of the P-Rob.
 * `get_status_info` ([prob_msgs/GetInfo]) - Get the Status Info of the P-Rob.
 * `get_all_status` ([prob_msgs/GetInfoString]) - Get all the Status infos.
+* `get_kinematic_indices` ([prob_msgs/GetInfoString]) - Get all the Status infos.
+* `get_actuator_release_state` ([prob_msgs/GetInfoString]) - Get all the Status infos.
+* `get_print_info` ([prob_msgs/GetInfoString]) - Get all the Status infos.
+* `get_application_info` ([prob_msgs/GetInfoString]) - Get all the Status infos.
 
 #### Run
 ```
@@ -59,7 +65,38 @@ on the P-Rob
 rosrun prob_interface execute_script.py ~/scripts/test_script.script
 ```
 
-### client_demo
+### client_functions_demo
+Is a demo node for showing how one could work with the robot in ROS.
+It will initialize and calibrate the robot, move joint 5 to 90 degrees and the open and close the gripper.
+After that, it will release the robot for 10 senconds and hold it again.
+
+#### Run
+```
+rosrun prob_interface client_functions_demo.py
+```
+
+### prob_status
+This node just prints the status of the robot every 2 second.
+
+#### Run
+```
+rosrun prob_interface prob_status.py
+```
+
+### prob_initialize
+A Node for initializing and calibrating the robot
+
+#### Parameters
+* `model` (String) - Model of the Robot that's connected. ex: 'PRob2R', 'PRob1R', 'PRob1Uplus', 'PRob1U'
+* `use_existing` (Boolean) - if True: Calibrate with existing values, if false: calibrate the robot -> movement
+* `channel_name` (String) - only needed if connected to a robot with usb, channel name is the device path of the usb. ex: '/dev/pcanusb2'
+
+#### Run
+```
+rosrun prob_interface prob_initialize.py PRob2R True /dev/pcanusb2
+```
+
+### move_joint
 Is a demo node which takes the same arguments as move_joint and executes this command over the move_joint service
 
 #### Parameters
@@ -72,7 +109,7 @@ Is a demo node which takes the same arguments as move_joint and executes this co
 
 #### Run
 ```
-rosrun prob_interface client_demo.py 1 50 50 50
+rosrun prob_interface move_joint.py 1 50 50 50
 ```
 
 ### prob_plot
