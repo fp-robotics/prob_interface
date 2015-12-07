@@ -47,7 +47,7 @@ find_package(catkin REQUIRED COMPONENTS
  add_message_files(
    FILES
    Status.msg
-   Position.msg
+   Array.msg
  )
 
 # Generate services in the 'srv' folder
@@ -57,7 +57,6 @@ find_package(catkin REQUIRED COMPONENTS
    MoveTool.srv
    MoveToPose.srv
    Wait.srv
-   WaitForRobot.srv
    Initialize.srv
    Calibrate.srv
    TestScript.srv
@@ -69,6 +68,9 @@ find_package(catkin REQUIRED COMPONENTS
    Empty.srv
    GetInfo.srv
    GetInfoString.srv
+   GetArray.srv
+   GetStringArray.srv
+   GetBoolArray.srv
  )
 
 ## Generate actions in the 'action' folder
