@@ -174,12 +174,12 @@ class RobotHandler:
         return myp.get_status("current_pose")
 
     @staticmethod
-    def get_euler_position():
-        return myp.get_status("euler_position")
-
-    @staticmethod
     def get_actuator_angles():
         return myp.get_status("current_actuator_angles")
+
+    @staticmethod
+    def get_posture():
+        return myp.get_status("current_posture")
 
     @staticmethod
     def get_current():
@@ -207,33 +207,33 @@ class RobotHandler:
     def initialize(model="PRob2R", kind="real", channel_name="/dev/pcanpci0",
                    channel_type="PEAK_SYS_PCAN_PCI", protocol="TMLCAN", host_id="10", baudrate="500000"):
         if RobotHandler.get_connection_info() == 0:
-            cmd = "\"{"
-            cmd += "\\\"action\\\":\\\"initialize\\\","
-            cmd += "\\\"model\\\":\\\"" + model + "\\\","
-            cmd += "\\\"robot_kind\\\":\\\"" + kind + "\\\""
+            cmd = "{"
+            cmd += "\"action\":\"initialize\","
+            cmd += "\"model\":\"" + model + "\","
+            cmd += "\"robot_kind\":\"" + kind + "\""
             if kind == 'real':
                 cmd += ","
-                cmd += "\\\"channel_name\\\":\\\"" + channel_name + "\\\","
-                cmd += "\\\"channel_type\\\":\\\"" + channel_type + "\\\","
-                cmd += "\\\"protocol\\\":\\\"" + protocol + "\\\","
-                cmd += "\\\"host_id\\\":" + host_id + ","
-                cmd += "\\\"baudrate\\\":" + baudrate
-            cmd += "}\""
+                cmd += "\"channel_name\":\"" + channel_name + "\","
+                cmd += "\"channel_type\":\"" + channel_type + "\","
+                cmd += "\"protocol\":\"" + protocol + "\","
+                cmd += "\"host_id\":" + host_id + ","
+                cmd += "\"baudrate\":" + baudrate
+            cmd += "}"
             myp.send(cmd)
             return 1
         return 0
 
     @staticmethod
     def finalize():
-        cmd = "\"{"
-        cmd += "\\\"action\\\":\\\"finalize\\\""
-        cmd += "}\""
+        cmd = "{"
+        cmd += "\"action\":\"finalize\""
+        cmd += "}"
         myp.send(cmd)
         time.sleep(0.5)
-        cmd = "\"{"
-        cmd += "\\\"action\\\":\\\"answer_dialog\\\","
-        cmd += "\\\"dialog_answer\\\":true"
-        cmd += "}\""
+        cmd = "{"
+        cmd += "\"action\":\"answer_dialog\","
+        cmd += "\"dialog_answer\":true"
+        cmd += "}"
         myp.send(cmd)
         return 1
     
@@ -242,33 +242,33 @@ class RobotHandler:
     #####################################
     @staticmethod
     def pause():
-        cmd = "\"{"
-        cmd += "\\\"action\\\":\\\"pause\\\""
-        cmd += "}\""
+        cmd = "{"
+        cmd += "\"action\":\"pause\""
+        cmd += "}"
         myp.send(cmd)
         return 1
 
     @staticmethod
     def resume():
-        cmd = "\"{"
-        cmd += "\\\"action\\\":\\\"resume\\\""
-        cmd += "}\""
+        cmd = "{"
+        cmd += "\"action\":\"resume\""
+        cmd += "}"
         myp.send(cmd) 
         return 1
 
     @staticmethod
     def stop():
-        cmd = "\"{"
-        cmd += "\\\"action\\\":\\\"stop\\\""
-        cmd += "}\""
+        cmd = "{"
+        cmd += "\"action\":\"stop\""
+        cmd += "}"
         myp.send(cmd) 
         return 1
 
     @staticmethod
     def recover():
-        cmd = "\"{"
-        cmd += "\\\"action\\\":\\\"recover\\\""
-        cmd += "}\""
+        cmd = "{"
+        cmd += "\"action\":\"recover\""
+        cmd += "}"
         myp.send(cmd)
         return 1
         
@@ -278,10 +278,10 @@ class RobotHandler:
     @staticmethod
     def calibrate(use_existing=True):
         # if RobotHandler.get_connection_info() == 2:
-        cmd = "\"{"
-        cmd += "\\\"action\\\": \\\"calibrate\\\","
-        cmd += "\\\"use_existing\\\": " + str(use_existing).lower()
-        cmd += "}\""
+        cmd = "{"
+        cmd += "\"action\": \"calibrate\","
+        cmd += "\"use_existing\": " + str(use_existing).lower()
+        cmd += "}"
         myp.send(cmd)
         return 1
 
@@ -292,13 +292,13 @@ class RobotHandler:
         length = len(joint_id)
         processed_string = '['
         for i in range(0, length - 1):
-            processed_string += "\\\"" + str(joint_id[i]) + "\\\","
-        processed_string += "\\\"" + str(joint_id[length - 1]) + "\\\"]"
+            processed_string += "\"" + str(joint_id[i]) + "\","
+        processed_string += "\"" + str(joint_id[length - 1]) + "\"]"
 
-        cmd = "\"{"
-        cmd += "\\\"action\\\": \\\"release\\\","
-        cmd += "\\\"joint_ids\\\": " + processed_string
-        cmd += "}\""
+        cmd = "{"
+        cmd += "\"action\": \"release\","
+        cmd += "\"joint_ids\": " + processed_string
+        cmd += "}"
         myp.send(cmd)
         return 1
 
@@ -309,33 +309,33 @@ class RobotHandler:
         length = len(joint_id)
         processed_string = '['
         for i in range(0, length - 1):
-            processed_string += "\\\"" + str(joint_id[i]) + "\\\","
-        processed_string += "\\\"" + str(joint_id[length - 1]) + "\\\"]"
+            processed_string += "\"" + str(joint_id[i]) + "\","
+        processed_string += "\"" + str(joint_id[length - 1]) + "\"]"
 
-        cmd = "\"{"
-        cmd += "\\\"action\\\": \\\"hold\\\","
-        cmd += "\\\"joint_ids\\\": " + processed_string
-        cmd += "}\""
+        cmd = "{"
+        cmd += "\"action\": \"hold\","
+        cmd += "\"joint_ids\": " + processed_string
+        cmd += "}"
         myp.send(cmd)
         return 1
 
     @staticmethod
     def execute_script(script_name):
         script_id = RobotHandler._get_id_from_name(script_name, "scripts")
-        cmd = "\"{"
-        cmd += "\\\"action\\\":\\\"execute_script\\\","
-        cmd += "\\\"script_id\\\":" + str(script_id)
-        cmd += "}\""
+        cmd = "{"
+        cmd += "\"action\":\"execute_script\","
+        cmd += "\"script_id\":" + str(script_id)
+        cmd += "}"
         myp.send(cmd)
         return 1
 
     @staticmethod
     def test_script(script_code=""):
-        cmd = "\"{"
-        cmd += "\\\"action\\\":\\\"test_script\\\","
-        cmd += "\\\"script_id\\\":0,"
-        cmd += "\\\"script_code\\\":\\\"" + script_code + "\\\""
-        cmd += "}\""
+        cmd = "{"
+        cmd += "\"action\":\"test_script\","
+        cmd += "\"script_id\":0,"
+        cmd += "\"script_code\":\"" + script_code + "\""
+        cmd += "}"
         myp.send(cmd)
         return 1
     
@@ -363,6 +363,10 @@ class RobotHandler:
         return RobotHandler.test_script("close_gripper" + str(arguments))
 
     @staticmethod
+    def move_gripper(*arguments):
+        return RobotHandler.test_script("move_gripper" + str(arguments))
+
+    @staticmethod
     def play_path(*arguments):
         return RobotHandler.test_script("play_path" + str(arguments))
 
@@ -385,27 +389,27 @@ class RobotHandler:
     @staticmethod
     def save_script(script_name="", script_code=""):
         # edit script
-        cmd = "\"{"
-        cmd += "\\\"action\\\":\\\"edit_script\\\","
-        cmd += "\\\"editor_id\\\":\\\"edit_script_0_0\\\","
-        cmd += "\\\"script_id\\\":0"
-        cmd += "}\""
+        cmd = "{"
+        cmd += "\"action\":\"edit_script\","
+        cmd += "\"editor_id\":\"edit_script_0_0\","
+        cmd += "\"script_id\":0"
+        cmd += "}"
         print(cmd)
         myp.send(cmd)
         # update script
-        cmd = "\"{"
-        cmd += "\\\"action\\\":\\\"update_script\\\","
-        cmd += "\\\"script_name\\\":\\\"" + script_name + "\\\","
-        cmd += "\\\"editor_id\\\":\\\"edit_script_0_0\\\""
-        cmd += "}\""
+        cmd = "{"
+        cmd += "\"action\":\"update_script\","
+        cmd += "\"script_name\":\"" + script_name + "\","
+        cmd += "\"editor_id\":\"edit_script_0_0\""
+        cmd += "}"
         print(cmd)
         myp.send(cmd)
         # save the script
-        cmd = "\"{"
-        cmd += "\\\"action\\\":\\\"save_script\\\","
-        cmd += "\\\"editor_id\\\":\\\"edit_script_0_0\\\","
-        cmd += "\\\"script_code\\\":\\\"" + script_code + "\\\""
-        cmd += "}\""
+        cmd = "{"
+        cmd += "\"action\":\"save_script\","
+        cmd += "\"editor_id\":\"edit_script_0_0\","
+        cmd += "\"script_code\":\"" + script_code + "\""
+        cmd += "}"
         print(cmd)
         myp.send(cmd)
         return 1
@@ -413,10 +417,10 @@ class RobotHandler:
     @staticmethod
     def delete_script(script_name):
         script_id = RobotHandler._get_id_from_name(script_name, "scripts")
-        cmd = "\"{"
-        cmd += "\\\"action\\\":\\\"delete_script\\\","
-        cmd += "\\\"script_id\\\":" + str(script_id)
-        cmd += "}\""
+        cmd = "{"
+        cmd += "\"action\":\"delete_script\","
+        cmd += "\"script_id\":" + str(script_id)
+        cmd += "}"
         print(cmd)
         myp.send(cmd)
         return 1
@@ -443,6 +447,14 @@ class RobotHandler:
         return 0
 
     @staticmethod
+    def get_task(task_name):
+        tasks = myp.get_status("tasks")
+        for task in tasks:
+            if task["name"] == task_name:
+                return task
+        return 0
+
+    @staticmethod
     def get_paths():
         paths = myp.get_status("paths")
         return paths
@@ -463,7 +475,7 @@ class RobotHandler:
             if element["name"] == name:
                 return element["id"]
         return 0
-    
+
 
     def publisher(self):
         pub1 = rospy.Publisher('connection', Status, queue_size=10)
