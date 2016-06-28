@@ -11,14 +11,14 @@ def usage():
 
 if __name__ == "__main__":
     arg_length = len(sys.argv)
-    model = 'PRob1R'
-    existing = True
+    model = 'PRob2R'
+    use_existing = True
     channel_name = '/dev/pcanpci0'
     if 1 <= arg_length <= 4:
 	if arg_length > 1:
 	    model = str(sys.argv[1])
 	if arg_length > 2:
-	    existing = bool(sys.argv[2])
+	    use_existing = bool(sys.argv[2])
 	if arg_length > 3:
 	    channel_name = str(sys.argv[3])
     else:
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     # initialize and calibrate robot
     initialize(model, "real", channel_name)
     wait_for_robot()
-    calibrate(existing)
+    calibrate(use_existing)
     wait_for_robot()
     print("Connected to PRob.")
     print("Robot Status:")

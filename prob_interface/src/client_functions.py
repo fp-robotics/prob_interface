@@ -36,7 +36,7 @@ def move_to_pose(name, velocity=None, acceleration=None, block=True):
 		print "Service call failed: %s"%e
 	
 # ROS wrapper for initialization
-def initialize(model='PRob2R', kind='real', channel_name='/dev/pcanpci0', channel_type='PEAK_SYS_PCAN_PCI', protocol='TMLCAN', host_id='10', baudrate='500000'):
+def initialize(model='PRob2R', kind='real', channel_name='/dev/pcanpci0', channel_type='PEAK_SYS_PCAN_PCI', protocol='TMLCAN', host_id='10', baudrate='1000000'):
 	rospy.wait_for_service('initialize')
 	if channel_name != '/dev/pcanpci0':
 	    channel_type='PEAK_SYS_PCAN_USB'

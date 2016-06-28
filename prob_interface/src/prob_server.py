@@ -50,6 +50,7 @@ def handle_initialize(req):
   return 1
 
 def handle_calibrate(req):
+  print("req: ", req)
   print("calibrate(%s)"%(req.use_existing))
   robot_arm.calibrate(req.use_existing)
   return 1
@@ -463,7 +464,8 @@ class RobotHandler:
     def wait_for_robot():
         while True:
             status = RobotHandler.get_status_info()
-            if status != 4:
+            connection_status = RobotHandler.get_connection_info()
+            if status != 4 and connection_status >= 2:
                 break
             else:
                 time.sleep(0.1)
