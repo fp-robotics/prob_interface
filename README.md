@@ -68,7 +68,6 @@ rosrun prob_interface execute_script.py ~/scripts/test_script.script
 ### client_functions_demo
 Is a demo node for showing how one could work with the robot in ROS.
 It will initialize and calibrate the robot, move joint 5 to 90 degrees and the open and close the gripper.
-After that, it will release the robot for 10 senconds and hold it again.
 
 #### Run
 ```

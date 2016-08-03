@@ -463,6 +463,7 @@ class RobotHandler:
     @staticmethod
     def wait_for_robot():
         while True:
+            time.sleep(0.1) # Give connections some time to flush their buffers so that robot status is reported correctly
             status = RobotHandler.get_status_info()
             connection_status = RobotHandler.get_connection_info()
             if status != 4 and connection_status >= 2:
