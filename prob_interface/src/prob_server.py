@@ -51,8 +51,8 @@ def handle_initialize(req):
 
 def handle_calibrate(req):
   print("req: ", req)
-  print("calibrate(%s)"%(req.use_existing))
-  robot_arm.calibrate(req.use_existing)
+  print("calibrate(%s)"%(req.script_id))
+  robot_arm.calibrate(req.script_id)
   return 1
 
 def handle_test_script(req):
@@ -277,11 +277,11 @@ class RobotHandler:
     # control functions                 #
     #####################################
     @staticmethod
-    def calibrate(use_existing=True):
+    def calibrate(script_id=0):
         # if RobotHandler.get_connection_info() == 2:
         cmd = "{"
         cmd += "\"action\": \"calibrate\","
-        cmd += "\"use_existing\": " + str(use_existing).lower()
+        cmd += "\"script_id\": " + str(script_id)
         cmd += "}"
         myp.send(cmd)
         return 1

@@ -48,11 +48,11 @@ def initialize(model='PRob2R', kind='real', channel_name='/dev/pcanpci0', channe
 		print "Service call failed: %s"%e
 
 # ROS wrapper for calibration
-def calibrate(use_existing=True):
+def calibrate(script_id=0):
 	rospy.wait_for_service('calibrate')
 	try:
 		calibrate = rospy.ServiceProxy('calibrate', Calibrate)
-		resp1 = calibrate(use_existing)
+		resp1 = calibrate(script_id)
 		return resp1.res
 	except rospy.ServiceException, e:
 		print "Service call failed: %s"%e

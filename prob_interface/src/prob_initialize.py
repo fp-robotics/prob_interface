@@ -7,16 +7,16 @@ from client_functions import *
 
 
 def usage():
-    return "%s [use_existing=True robot_model='PRob2R' ]" % sys.argv[0]
+    return "%s [script_id=0 robot_model='PRob2R' ]" % sys.argv[0]
 
 if __name__ == "__main__":
     arg_length = len(sys.argv)
     model = 'PRob2R'
-    use_existing = True
+    script_id = -1
     channel_name = '/dev/pcanpci0'
     if 1 <= arg_length <= 4:
 	if arg_length > 1:
-	    use_existing = bool(sys.argv[1])
+	    script_id = int(sys.argv[1])
 	if arg_length > 2:
 	    model = str(sys.argv[2])
 	if arg_length > 3:
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     # initialize and calibrate robot
     initialize(model, "real", channel_name)
     wait_for_robot()
-    calibrate(use_existing)
+    calibrate(script_id)
     wait_for_robot()
     print("Connected to PRob.")
     print("Robot Status:")
