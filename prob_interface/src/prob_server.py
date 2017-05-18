@@ -105,16 +105,17 @@ def handle_get_message_info(req):
 def handle_get_application_info(req):
   print("get_application_info()")
   status = robot_arm.get_application_info()
-  return status
+  print("Status: ", status)
+  return GetAppInfoResponse(status['script_id'], status['script_name'])
 
 def handle_get_actuator_release_state(req):
   print("get_actuator_release_state()")
-  status = robot_arm.get_actuator_release_state()
-  return status
+  status = robot_arm.get_actuator_release_state()[:-1]
+  return GetBoolArrayResponse(status)
 
-def handle_get_print_info(req):
-  print("get_print_info()")
-  status = robot_arm.get_print_info()
+def handle_get_application_output(req):
+  print("get_application_output()")
+  status = robot_arm.get_application_output()
   return status
 
 def handle_get_kinematic_indices(req):
@@ -168,9 +169,10 @@ class RobotHandler:
     def get_application_info():
         return myp.get_status("application_info")
 
+
     @staticmethod
     def get_actuator_release_state():
-        return [not state for state in myp.get_status("actuator_release_state")]
+        return myp.get_status("actuator_release_state")
 
     @staticmethod
     def get_position():
@@ -189,7 +191,7 @@ class RobotHandler:
         return myp.get_status("current_current")
 
     @staticmethod
-    def get_print_info():
+    def get_application_output():
         res = myp.get_status("print_info")
         return GetInfoStringResponse(str(res))
 
@@ -543,8 +545,8 @@ def start_server():
     srv_close_gripper = rospy.Service('close_gripper', CloseGripper, handle_close_gripper)
     srv_get_connection_info = rospy.Service('get_connection_info', GetInfo, handle_get_connection_info)
     srv_get_status_info = rospy.Service('get_status_info', GetInfo, handle_get_status_info)
-    srv_get_application_info = rospy.Service('get_application_info', GetInfo, handle_get_application_info)
-    srv_get_print_info = rospy.Service('get_print_info', GetInfoString, handle_get_print_info)
+    srv_get_application_info = rospy.Service('get_application_info', GetAppInfo, handle_get_application_info)
+    srv_get_application_output = rospy.Service('get_application_output', GetInfoString, handle_get_application_output)
     srv_get_message_info = rospy.Service('get_message_info', GetInfoString, handle_get_message_info)
     srv_get_kinematic_indices = rospy.Service('get_kinematic_indices', GetStringArray, handle_get_kinematic_indices)
     srv_get_actuator_indices = rospy.Service('get_actuator_indices', GetArray, handle_get_actuator_indices)

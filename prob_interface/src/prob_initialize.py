@@ -12,7 +12,7 @@ def usage():
 if __name__ == "__main__":
     arg_length = len(sys.argv)
     model = 'PRob2R'
-    script_id = -1
+    script_id = 0
     channel_name = '/dev/pcanpci0'
     if 1 <= arg_length <= 4:
 	if arg_length > 1:

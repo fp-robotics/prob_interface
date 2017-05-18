@@ -71,6 +71,7 @@ find_package(catkin REQUIRED COMPONENTS
    GetArray.srv
    GetStringArray.srv
    GetBoolArray.srv
+   GetAppInfo.srv
  )
 
 ## Generate actions in the 'action' folder

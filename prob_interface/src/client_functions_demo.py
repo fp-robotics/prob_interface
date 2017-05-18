@@ -8,16 +8,23 @@ from client_functions import *
 
 if __name__ == "__main__":
     if get_connection_info() == 4 and get_status_info() == 1:
-        print(get_kinematic_indices())
+        print("App Info: ", get_application_info())
+        
+        print("Kin Indices: ", get_kinematic_indices())
         
         # TODO: check value
-        print(get_print_info())
+        print("App Output: ", get_application_output())
+
+
+        release()
+        time.sleep(0.5)
+        print("Release state: ", get_actuator_release_state())
+        hold()
+        time.sleep(0.5)
+        print("Release state: ", get_actuator_release_state())
         
-        # TODO Check value
-        print(get_actuator_release_state())
-        
-        print(get_all_status())
-        #print(get_application_info())
+        #print(get_all_status())
+        #
         """
         move_joint(5,90,60,90)
         wait_for_robot()
@@ -47,5 +54,5 @@ if __name__ == "__main__":
         print('Robot is not ready to execute commands. Something with initialization and calibration went wrong.')
         print(get_message_info())
     
-    sys.exit(1)
+    sys.exit(0)
         
