@@ -1,3 +1,4 @@
 string script_code
+string script_type
 ---
 uint8 res

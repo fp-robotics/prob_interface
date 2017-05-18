@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+import time
 import rospy
 from prob_msgs.srv import *
 import ast
@@ -58,17 +59,19 @@ def calibrate(script_id=0):
 		print "Service call failed: %s"%e
 
 # ROS wrapper for test_script
-def test_script(script_code=''):
+def test_script(script_code='', script_type='main'):
 	rospy.wait_for_service('test_script')
 	try:
 		test_script = rospy.ServiceProxy('test_script', TestScript)
-		resp1 = test_script(script_code)
+		resp1 = test_script(script_code, script_type)
 		return resp1.res
 	except rospy.ServiceException, e:
 		print "Service call failed: %s"%e
 
 # ROS wrapper for wait_for_robot
 def wait_for_robot():
+	# Wait some time for status to be updated
+	time.sleep(0.1)
 	rospy.wait_for_service('wait_for_robot')
 	try:
 		wait_for_robot = rospy.ServiceProxy('wait_for_robot', Empty)
@@ -99,11 +102,16 @@ def execute_script(script_id=1):
 
 # ROS wrapper for release
 def release(joint_id=None):
-	joint_id = str(joint_id)
-	joint_id = joint_id.replace('[','')
-	joint_id = joint_id.replace(']','')
-	joint_id = joint_id.replace(',','')
-	joint_id = joint_id.replace(' ','')
+	if joint_id is None:
+		joint_id = '123456'
+	else:
+		# Remove all separators if use added some
+		joint_id = str(joint_id)
+		joint_id = joint_id.replace('[','')
+		joint_id = joint_id.replace(']','')
+		joint_id = joint_id.replace(',','')
+		joint_id = joint_id.replace(' ','')
+	
 	rospy.wait_for_service('release')
 	try:
 		release = rospy.ServiceProxy('release', Release)
@@ -114,11 +122,16 @@ def release(joint_id=None):
 
 # ROS wrapper for hold
 def hold(joint_id = None):
-	joint_id = str(joint_id)
-	joint_id = joint_id.replace('[','')
-	joint_id = joint_id.replace(']','')
-	joint_id = joint_id.replace(',','')
-	joint_id = joint_id.replace(' ','')
+	if joint_id is None:
+		joint_id = b'123456'
+	else:
+		# Remove all separators if use added some
+		joint_id = str(joint_id)
+		joint_id = joint_id.replace('[','')
+		joint_id = joint_id.replace(']','')
+		joint_id = joint_id.replace(',','')
+		joint_id = joint_id.replace(' ','')
+	
 	rospy.wait_for_service('hold')
 	try:
 		hold = rospy.ServiceProxy('hold', Release)
@@ -214,7 +227,7 @@ def get_actuator_release_state():
 def get_kinematic_indices():
 	rospy.wait_for_service('get_kinematic_indices')
 	try:
-		get_kinematic_indices = rospy.ServiceProxy('get_kinematic_indices', GetArray)
+		get_kinematic_indices = rospy.ServiceProxy('get_kinematic_indices', GetStringArray)
 		resp1 = get_kinematic_indices()
 		return resp1.res
 	except rospy.ServiceException, e:
@@ -244,8 +257,11 @@ def get_message_info():
 def get_all_status():
 	rospy.wait_for_service('get_all_status')
 	try:
-		get_all_status = rospy.ServiceProxy('get_all_status', GetInfo)
+		get_all_status = rospy.ServiceProxy('get_all_status', GetInfoString)
 		resp1 = get_all_status()
 		return ast.literal_eval(resp1.res)
 	except rospy.ServiceException, e:
 		print "Service call failed: %s"%e
+	
+	
+		

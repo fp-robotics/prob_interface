@@ -56,8 +56,8 @@ def handle_calibrate(req):
   return 1
 
 def handle_test_script(req):
-  print("test_script(%s)"%(req.script_code))
-  robot_arm.test_script( req.script_code)
+  print("test_script(%s, %s)"%(req.script_code, req.script_type))
+  robot_arm.test_script( req.script_code, req.script_type)
   return 1
 
 def handle_execute_script(req):
@@ -67,6 +67,7 @@ def handle_execute_script(req):
 
 def handle_release(req):
   print("release(%s)"%(req.joint_id))
+  print("Type joint_id: ", type(req.joint_id))
   robot_arm.release(req.joint_id)
   return 1
 
@@ -119,7 +120,8 @@ def handle_get_print_info(req):
 def handle_get_kinematic_indices(req):
   print("get_kinematic_indices()")
   array = robot_arm.get_kinematic_indices()
-  return array
+  
+  return GetStringArrayResponse(array)
 
 def handle_get_all_status(req):
   print("get_all_status()")
@@ -130,7 +132,7 @@ def handle_get_all_status(req):
 def handle_get_actuator_indices(req):
   print("get_actuator_indices()")
   array = robot_arm.get_actuator_indices()
-  return array
+  return GetArrayResponse(array)
 
 def handle_get_gripper_angle(req):
   print("get_gripper_angle()")
@@ -188,7 +190,8 @@ class RobotHandler:
 
     @staticmethod
     def get_print_info():
-        return myp.get_status("print_info")
+        res = myp.get_status("print_info")
+        return GetInfoStringResponse(str(res))
 
     @staticmethod
     def get_kinematic_indices():
@@ -288,13 +291,15 @@ class RobotHandler:
 
     @staticmethod
     def release(joint_id=None):
-        if not joint_id:
+        if joint_id is None:
             joint_id = [int(i) for i in RobotHandler.get_kinematic_indices()]
+
         length = len(joint_id)
         processed_string = '['
-        for i in range(0, length - 1):
+        for i in range(length - 1):
             processed_string += "\"" + str(joint_id[i]) + "\","
         processed_string += "\"" + str(joint_id[length - 1]) + "\"]"
+        print("Strange string: ", processed_string)
 
         cmd = "{"
         cmd += "\"action\": \"release\","
@@ -305,8 +310,9 @@ class RobotHandler:
 
     @staticmethod
     def hold(joint_id=None):
-        if not joint_id:
+        if joint_id is None:
             joint_id = [int(i) for i in RobotHandler.get_kinematic_indices()]
+        
         length = len(joint_id)
         processed_string = '['
         for i in range(0, length - 1):
@@ -331,11 +337,12 @@ class RobotHandler:
         return 1
 
     @staticmethod
-    def test_script(script_code=""):
+    def test_script(script_code="", script_type="main"):
         cmd = "{"
         cmd += "\"action\":\"test_script\","
         cmd += "\"script_id\":0,"
-        cmd += "\"script_code\":\"" + script_code + "\""
+        cmd += "\"script_code\":\"" + script_code + "\","
+        cmd += "\"script_type\":\"" + script_type + "\""
         cmd += "}"
         myp.send(cmd)
         return 1
@@ -386,7 +393,8 @@ class RobotHandler:
     def get_scripts():
         scripts = myp.get_status("scripts")
         return scripts
-
+    
+    # TODO
     @staticmethod
     def save_script(script_name="", script_code=""):
         # edit script
@@ -462,14 +470,18 @@ class RobotHandler:
 
     @staticmethod
     def wait_for_robot():
-        while True:
-            time.sleep(0.1) # Give connections some time to flush their buffers so that robot status is reported correctly
+        status = RobotHandler.get_status_info()
+        connection_status = RobotHandler.get_connection_info()
+        print("status: %i" % status)
+        print("con status: %i" % connection_status)
+        
+        while status == 4 and connection_status >= 2:
+            time.sleep(0.5) # Give connections some time to flush their buffers so that robot status is reported correctly
             status = RobotHandler.get_status_info()
             connection_status = RobotHandler.get_connection_info()
-            if status != 4 and connection_status >= 2:
-                break
-            else:
-                time.sleep(0.1)
+            print("status: %i" % status)
+            print("con status: %i" % connection_status)
+
 
     @staticmethod
     def _get_id_from_name(name, table_name):
@@ -551,15 +563,27 @@ def start_server():
     #robot_arm.wait_for_robot()
     print("Connected to PRob.")
     print("Robot Status:")
-    print("_______________________________________________________")
-    print("For Connection Status:               | For Status Info:")
-    print("0: not Initialized, not Calibrated   | None")
-    print("1: Initializing, not Calibrated      | Ready")
-    print("2: Initialized, not Calibrated       | Stopped")
-    print("3: Initialized, Calibrating          | Paused")
-    print("4: Initialized, Calibrated           | Running")
-    print("5:                                   | Released")
-    print("6:                                   | Error")
+    print("_____________________________________")
+    print("For Connection Status:")
+    print("0: not Initialized, not Calibrated")
+    print("1: Initializing, not Calibrated")
+    print("2: Initialized, not Calibrated")
+    print("3: Initialized, Calibrating")
+    print("4: Initialized, Calibrated")
+    print("_____________________________________")
+    print("For Status Info:")
+    print("0: None")
+    print("1: Ready")
+    print("2: Stopped")
+    print("3: Paused")
+    print("4: Running")
+    print("5: Reased")
+    print("6: Error")
+    print("7: Recording")
+    print("8: Calibrating")
+    print("9: Processing")
+    print("_____________________________________")
+    
     print "Connection: ",robot_arm.get_connection_info()
     print "Status: ", robot_arm.get_status_info()
     start_new_thread(robot_arm.publisher,())
