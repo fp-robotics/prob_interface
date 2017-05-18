@@ -14,17 +14,12 @@ if __name__ == "__main__":
         
         # TODO: check value
         print("App Output: ", get_application_output())
-
-
-        release()
-        time.sleep(0.5)
         print("Release state: ", get_actuator_release_state())
-        hold()
-        time.sleep(0.5)
-        print("Release state: ", get_actuator_release_state())
-        
+
         #print(get_all_status())
-        #
+
+        move_to_pose('back_pose')
+
         """
         move_joint(5,90,60,90)
         wait_for_robot()

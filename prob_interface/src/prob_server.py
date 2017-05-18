@@ -12,135 +12,169 @@ from sockjs_client import SockJSClient
 
 robot_arm = 0
 
+
 # myP function handles
 def handle_move_joint(req):
-  print("move_joint(%s, %s, %s, %s, %s, %s)"%(req.axis, req.deg, req.vel, req.acc, bool(req.block), bool(req.relative)))
-  robot_arm.move_joint( req.axis, req.deg, req.vel, req.acc, bool(req.block), bool(req.relative))
-  return 1
+    print(
+    "move_joint(%s, %s, %s, %s, %s, %s)" % (req.axis, req.deg, req.vel, req.acc, bool(req.block), bool(req.relative)))
+    robot_arm.move_joint(req.axis, req.deg, req.vel, req.acc, bool(req.block), bool(req.relative))
+    return 1
+
 
 def handle_move_tool(req):
-  print("move_tool(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"%( req.x, req.y, req.z, req.orientation, req.velocity, req.acceleration, req.velocity_rot, req.acceleration_rot, bool(req.block), bool(req.relative), req.frame))
-  robot_arm.move_tool( req.x, req.y, req.z, req.orientation, req.velocity, req.acceleration, req.velocity_rot, req.acceleration_rot, bool(req.block), bool(req.relative), req.frame)
-  return 1
-  
+    print("move_tool(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" % (
+    req.x, req.y, req.z, req.orientation, req.velocity, req.acceleration, req.velocity_rot, req.acceleration_rot,
+    bool(req.block), bool(req.relative), req.frame))
+    robot_arm.move_tool(req.x, req.y, req.z, req.orientation, req.velocity, req.acceleration, req.velocity_rot,
+                        req.acceleration_rot, bool(req.block), bool(req.relative), req.frame)
+    return 1
+
+
 def handle_move_to_pose(req):
-  print("move_to_pose(%s, %s, %s, %s, %s)"%(req.name, req.vel, req.acc, req.block))
-  robot_arm.move_to_pose( req.name, req.vel, req.acc, req.block)
-  return 1
-  
+    print("move_to_pose(%s, %s, %s, %s)" % (req.name, req.vel, req.acc, req.block))
+    if int(req.vel) is 0:
+        req.vel = None
+    if int(req.acc) is 0:
+        req.acc = None
+
+    robot_arm.move_to_pose(req.name, req.vel, req.acc, req.block)
+    return 1
+
+
 def handle_wait_for_robot(req):
-  print("wait_for_robot()")
-  robot_arm.wait_for_robot()
-  return 1
-  
+    print("wait_for_robot()")
+    robot_arm.wait_for_robot()
+    return 1
+
+
 def handle_finalize(req):
-  print("finalize()")
-  robot_arm.finalize()
-  return 1
-  
+    print("finalize()")
+    robot_arm.finalize()
+    return 1
+
 
 def handle_wait(req):
-  print("wait(%s)"%(req.time))
-  robot_arm.wait( req.time)
-  return 1
+    print("wait(%s)" % (req.time))
+    robot_arm.wait(req.time)
+    return 1
+
 
 def handle_initialize(req):
-  print("initialize(%s, %s, %s, %s, %s, %s, %s)"%(req.model, req.kind, req.channel_name, req.channel_type, req.protocol, req.host_id, req.baudrate))
-  robot_arm.initialize(req.model, req.kind, req.channel_name, req.channel_type, req.protocol, req.host_id, req.baudrate)
-  return 1
+    print("initialize(%s, %s, %s, %s, %s, %s, %s)" % (
+    req.model, req.kind, req.channel_name, req.channel_type, req.protocol, req.host_id, req.baudrate))
+    robot_arm.initialize(req.model, req.kind, req.channel_name, req.channel_type, req.protocol, req.host_id,
+                         req.baudrate)
+    return 1
+
 
 def handle_calibrate(req):
-  print("req: ", req)
-  print("calibrate(%s)"%(req.script_id))
-  robot_arm.calibrate(req.script_id)
-  return 1
+    print("req: ", req)
+    print("calibrate(%s)" % (req.script_id))
+    robot_arm.calibrate(req.script_id)
+    return 1
+
 
 def handle_test_script(req):
-  print("test_script(%s, %s)"%(req.script_code, req.script_type))
-  robot_arm.test_script( req.script_code, req.script_type)
-  return 1
+    print("test_script(%s, %s)" % (req.script_code, req.script_type))
+    robot_arm.test_script(req.script_code, req.script_type)
+    return 1
+
 
 def handle_execute_script(req):
-  print("execute_script(%s)"%(req.script_id))
-  robot_arm.execute_script(req.script_id)
-  return 1
+    print("execute_script(%s)" % (req.script_id))
+    robot_arm.execute_script(req.script_id)
+    return 1
+
 
 def handle_release(req):
-  print("release(%s)"%(req.joint_id))
-  print("Type joint_id: ", type(req.joint_id))
-  robot_arm.release(req.joint_id)
-  return 1
+    print("release(%s)" % (req.joint_id))
+    print("Type joint_id: ", type(req.joint_id))
+    robot_arm.release(req.joint_id)
+    return 1
+
 
 def handle_hold(req):
-  print("hold(%s)"%(req.joint_id))
-  robot_arm.hold(req.joint_id)
-  return 1
+    print("hold(%s)" % (req.joint_id))
+    robot_arm.hold(req.joint_id)
+    return 1
+
 
 def handle_open_gripper(req):
-  print("open_gripper(%s, %s, %s)"%(req.position, req.velocity, req.acceleration))
-  robot_arm.open_gripper(req.position, req.velocity, req.acceleration)
-  return 1
+    print("open_gripper(%s, %s, %s)" % (req.position, req.velocity, req.acceleration))
+    robot_arm.open_gripper(req.position, req.velocity, req.acceleration)
+    return 1
+
 
 def handle_close_gripper(req):
-  print("close_gripper(%s, %s, %s)"%(req.velocity, req.acceleration, req.current))
-  robot_arm.close_gripper(req.velocity, req.acceleration)
-  return 1
+    print("close_gripper(%s, %s, %s)" % (req.velocity, req.acceleration, req.current))
+    robot_arm.close_gripper(req.velocity, req.acceleration)
+    return 1
+
 
 def handle_get_status_info(req):
-  print("get_status_info()")
-  status = robot_arm.get_status_info()
-  print status
-  return status
+    print("get_status_info()")
+    status = robot_arm.get_status_info()
+    print status
+    return status
+
 
 def handle_get_connection_info(req):
-  print("get_connection_info()")
-  connection_info = robot_arm.get_connection_info()
-  return connection_info
+    print("get_connection_info()")
+    connection_info = robot_arm.get_connection_info()
+    return connection_info
+
 
 def handle_get_message_info(req):
-  print("get_message_info()")
-  status = robot_arm.get_message_info()
-  return GetInfoStringResponse(str(status))
+    print("get_message_info()")
+    status = robot_arm.get_message_info()
+    return GetInfoStringResponse(str(status))
+
 
 def handle_get_application_info(req):
-  print("get_application_info()")
-  status = robot_arm.get_application_info()
-  print("Status: ", status)
-  return GetAppInfoResponse(status['script_id'], status['script_name'])
+    print("get_application_info()")
+    status = robot_arm.get_application_info()
+    print("Status: ", status)
+    return GetAppInfoResponse(status['script_id'], status['script_name'])
+
 
 def handle_get_actuator_release_state(req):
-  print("get_actuator_release_state()")
-  status = robot_arm.get_actuator_release_state()[:-1]
-  return GetBoolArrayResponse(status)
+    print("get_actuator_release_state()")
+    status = robot_arm.get_actuator_release_state()[:-1]
+    return GetBoolArrayResponse(status)
+
 
 def handle_get_application_output(req):
-  print("get_application_output()")
-  status = robot_arm.get_application_output()
-  return status
+    print("get_application_output()")
+    status = robot_arm.get_application_output()
+    return status
+
 
 def handle_get_kinematic_indices(req):
-  print("get_kinematic_indices()")
-  array = robot_arm.get_kinematic_indices()
-  
-  return GetStringArrayResponse(array)
+    print("get_kinematic_indices()")
+    array = robot_arm.get_kinematic_indices()
+
+    return GetStringArrayResponse(array)
+
 
 def handle_get_all_status(req):
-  print("get_all_status()")
-  status = robot_arm.get_all_status()
-  status = str(status)
-  return GetInfoStringResponse(status)
+    print("get_all_status()")
+    status = robot_arm.get_all_status()
+    status = str(status)
+    return GetInfoStringResponse(status)
+
 
 def handle_get_actuator_indices(req):
-  print("get_actuator_indices()")
-  array = robot_arm.get_actuator_indices()
-  return GetArrayResponse(array)
+    print("get_actuator_indices()")
+    array = robot_arm.get_actuator_indices()
+    return GetArrayResponse(array)
+
 
 def handle_get_gripper_angle(req):
-  print("get_gripper_angle()")
-  robot_arm.get_gripper_angle()
+    print("get_gripper_angle()")
+    robot_arm.get_gripper_angle()
+
 
 class RobotHandler:
-
     # 0: 'not Initialized, not Calibrated'
     # 1: 'Initializing, not Calibrated'
     # 2: 'Initialized, not Calibrated'
@@ -149,6 +183,7 @@ class RobotHandler:
     @staticmethod
     def get_connection_info():
         return myp.get_status("connection_info")
+
     # 0: 'None'
     # 1: 'Ready'
     # 2: 'Stopped'
@@ -168,7 +203,6 @@ class RobotHandler:
     @staticmethod
     def get_application_info():
         return myp.get_status("application_info")
-
 
     @staticmethod
     def get_actuator_release_state():
@@ -242,7 +276,7 @@ class RobotHandler:
         cmd += "}"
         myp.send(cmd)
         return 1
-    
+
     #####################################
     # status functions                  #
     #####################################
@@ -259,7 +293,7 @@ class RobotHandler:
         cmd = "{"
         cmd += "\"action\":\"resume\""
         cmd += "}"
-        myp.send(cmd) 
+        myp.send(cmd)
         return 1
 
     @staticmethod
@@ -267,7 +301,7 @@ class RobotHandler:
         cmd = "{"
         cmd += "\"action\":\"stop\""
         cmd += "}"
-        myp.send(cmd) 
+        myp.send(cmd)
         return 1
 
     @staticmethod
@@ -277,7 +311,7 @@ class RobotHandler:
         cmd += "}"
         myp.send(cmd)
         return 1
-        
+
     #####################################
     # control functions                 #
     #####################################
@@ -314,7 +348,7 @@ class RobotHandler:
     def hold(joint_id=None):
         if joint_id is None:
             joint_id = [int(i) for i in RobotHandler.get_kinematic_indices()]
-        
+
         length = len(joint_id)
         processed_string = '['
         for i in range(0, length - 1):
@@ -348,7 +382,7 @@ class RobotHandler:
         cmd += "}"
         myp.send(cmd)
         return 1
-    
+
     #####################################
     # script commands                   #
     #####################################
@@ -395,7 +429,7 @@ class RobotHandler:
     def get_scripts():
         scripts = myp.get_status("scripts")
         return scripts
-    
+
     # TODO
     @staticmethod
     def save_script(script_name="", script_code=""):
@@ -476,14 +510,14 @@ class RobotHandler:
         connection_status = RobotHandler.get_connection_info()
         print("status: %i" % status)
         print("con status: %i" % connection_status)
-        
+
         while status == 4 and connection_status >= 2:
-            time.sleep(0.5) # Give connections some time to flush their buffers so that robot status is reported correctly
+            time.sleep(
+                0.5)  # Give connections some time to flush their buffers so that robot status is reported correctly
             status = RobotHandler.get_status_info()
             connection_status = RobotHandler.get_connection_info()
             print("status: %i" % status)
             print("con status: %i" % connection_status)
-
 
     @staticmethod
     def _get_id_from_name(name, table_name):
@@ -493,14 +527,13 @@ class RobotHandler:
                 return element["id"]
         return 0
 
-
     def publisher(self):
         pub1 = rospy.Publisher('connection', Status, queue_size=10)
-        pub2 = rospy.Publisher('status', Status, queue_size=10) 
+        pub2 = rospy.Publisher('status', Status, queue_size=10)
         pub3 = rospy.Publisher('position', Array, queue_size=10)
         pub4 = rospy.Publisher('current', Array, queue_size=10)
         pub5 = rospy.Publisher('actuator_angles', Array, queue_size=10)
-        rate = rospy.Rate(10) #hz
+        rate = rospy.Rate(10)  # hz
         print("Publisher started to publish Status Infos..")
         while not rospy.is_shutdown():
             connection = self.get_connection_info()
@@ -523,97 +556,101 @@ class RobotHandler:
 
 # initialize server
 def start_server():
-  global robot_arm
+    global robot_arm
 
-  try:
-    rospy.init_node('MyP')
+    try:
+        rospy.init_node('MyP')
 
-    # ROS service
-    srv_move_joint = rospy.Service('move_joint', MoveJoint, handle_move_joint)
-    srv_move_tool = rospy.Service('move_tool', MoveTool, handle_move_tool)
-    srv_move_to_pose = rospy.Service('move_to_pose', MoveToPose, handle_move_to_pose)
-    srv_wait_for_robot = rospy.Service('wait_for_robot', Empty, handle_wait_for_robot)
-    srv_finalize = rospy.Service('finalize', Empty, handle_finalize)
-    srv_move_wait = rospy.Service('wait', Wait, handle_wait)
-    srv_initialize = rospy.Service('initialize', Initialize, handle_initialize)
-    srv_calibrate = rospy.Service('calibrate', Calibrate, handle_calibrate)
-    srv_test_script = rospy.Service('test_script', TestScript, handle_test_script)
-    srv_execute_script = rospy.Service('execute_script', ExecuteScript, handle_execute_script)
-    srv_release = rospy.Service('release', Release, handle_release)
-    srv_hold = rospy.Service('hold', Release, handle_hold)
-    srv_open_gripper = rospy.Service('open_gripper', OpenGripper, handle_open_gripper)
-    srv_close_gripper = rospy.Service('close_gripper', CloseGripper, handle_close_gripper)
-    srv_get_connection_info = rospy.Service('get_connection_info', GetInfo, handle_get_connection_info)
-    srv_get_status_info = rospy.Service('get_status_info', GetInfo, handle_get_status_info)
-    srv_get_application_info = rospy.Service('get_application_info', GetAppInfo, handle_get_application_info)
-    srv_get_application_output = rospy.Service('get_application_output', GetInfoString, handle_get_application_output)
-    srv_get_message_info = rospy.Service('get_message_info', GetInfoString, handle_get_message_info)
-    srv_get_kinematic_indices = rospy.Service('get_kinematic_indices', GetStringArray, handle_get_kinematic_indices)
-    srv_get_actuator_indices = rospy.Service('get_actuator_indices', GetArray, handle_get_actuator_indices)
-    srv_get_actuator_release_state = rospy.Service('get_actuator_release_state', GetBoolArray, handle_get_actuator_release_state)
-    srv_get_all_status = rospy.Service('get_all_status', GetInfoString, handle_get_all_status)
-  
-    #srv_get_gripper_angle = rospy.Service('get_gripper_angle', Empty, handle_get_gripper_angle)
+        # ROS service
+        srv_move_joint = rospy.Service('move_joint', MoveJoint, handle_move_joint)
+        srv_move_tool = rospy.Service('move_tool', MoveTool, handle_move_tool)
+        srv_move_to_pose = rospy.Service('move_to_pose', MoveToPose, handle_move_to_pose)
+        srv_wait_for_robot = rospy.Service('wait_for_robot', Empty, handle_wait_for_robot)
+        srv_finalize = rospy.Service('finalize', Empty, handle_finalize)
+        srv_move_wait = rospy.Service('wait', Wait, handle_wait)
+        srv_initialize = rospy.Service('initialize', Initialize, handle_initialize)
+        srv_calibrate = rospy.Service('calibrate', Calibrate, handle_calibrate)
+        srv_test_script = rospy.Service('test_script', TestScript, handle_test_script)
+        srv_execute_script = rospy.Service('execute_script', ExecuteScript, handle_execute_script)
+        srv_release = rospy.Service('release', Release, handle_release)
+        srv_hold = rospy.Service('hold', Release, handle_hold)
+        srv_open_gripper = rospy.Service('open_gripper', OpenGripper, handle_open_gripper)
+        srv_close_gripper = rospy.Service('close_gripper', CloseGripper, handle_close_gripper)
+        srv_get_connection_info = rospy.Service('get_connection_info', GetInfo, handle_get_connection_info)
+        srv_get_status_info = rospy.Service('get_status_info', GetInfo, handle_get_status_info)
+        srv_get_application_info = rospy.Service('get_application_info', GetAppInfo, handle_get_application_info)
+        srv_get_application_output = rospy.Service('get_application_output', GetInfoString,
+                                                   handle_get_application_output)
+        srv_get_message_info = rospy.Service('get_message_info', GetInfoString, handle_get_message_info)
+        srv_get_kinematic_indices = rospy.Service('get_kinematic_indices', GetStringArray, handle_get_kinematic_indices)
+        srv_get_actuator_indices = rospy.Service('get_actuator_indices', GetArray, handle_get_actuator_indices)
+        srv_get_actuator_release_state = rospy.Service('get_actuator_release_state', GetBoolArray,
+                                                       handle_get_actuator_release_state)
+        srv_get_all_status = rospy.Service('get_all_status', GetInfoString, handle_get_all_status)
 
-    # Connection to myP XMLRPC server
-    robot_arm = RobotHandler()
+        # srv_get_gripper_angle = rospy.Service('get_gripper_angle', Empty, handle_get_gripper_angle)
 
-    # initialize and calibrate robot
-    #robot_arm.initialize("PRob1Uplus", "real")
-    #robot_arm.wait_for_robot()
-    #robot_arm.calibrate(True)
-    #robot_arm.wait_for_robot()
-    print("Connected to PRob.")
-    print("Robot Status:")
-    print("_____________________________________")
-    print("For Connection Status:")
-    print("0: not Initialized, not Calibrated")
-    print("1: Initializing, not Calibrated")
-    print("2: Initialized, not Calibrated")
-    print("3: Initialized, Calibrating")
-    print("4: Initialized, Calibrated")
-    print("_____________________________________")
-    print("For Status Info:")
-    print("0: None")
-    print("1: Ready")
-    print("2: Stopped")
-    print("3: Paused")
-    print("4: Running")
-    print("5: Reased")
-    print("6: Error")
-    print("7: Recording")
-    print("8: Calibrating")
-    print("9: Processing")
-    print("_____________________________________")
-    
-    print "Connection: ",robot_arm.get_connection_info()
-    print "Status: ", robot_arm.get_status_info()
-    start_new_thread(robot_arm.publisher,())
-    rospy.spin()
+        # Connection to myP XMLRPC server
+        robot_arm = RobotHandler()
 
-  except Exception as ex:
-    print("ERROR: ", ex)
-    sys.exit(1)
+        # initialize and calibrate robot
+        # robot_arm.initialize("PRob1Uplus", "real")
+        # robot_arm.wait_for_robot()
+        # robot_arm.calibrate(True)
+        # robot_arm.wait_for_robot()
+        print("Connected to PRob.")
+        print("Robot Status:")
+        print("_____________________________________")
+        print("For Connection Status:")
+        print("0: not Initialized, not Calibrated")
+        print("1: Initializing, not Calibrated")
+        print("2: Initialized, not Calibrated")
+        print("3: Initialized, Calibrating")
+        print("4: Initialized, Calibrated")
+        print("_____________________________________")
+        print("For Status Info:")
+        print("0: None")
+        print("1: Ready")
+        print("2: Stopped")
+        print("3: Paused")
+        print("4: Running")
+        print("5: Reased")
+        print("6: Error")
+        print("7: Recording")
+        print("8: Calibrating")
+        print("9: Processing")
+        print("_____________________________________")
+
+        print "Connection: ", robot_arm.get_connection_info()
+        print "Status: ", robot_arm.get_status_info()
+        start_new_thread(robot_arm.publisher, ())
+        rospy.spin()
+
+    except Exception as ex:
+        print("ERROR: ", ex)
+        sys.exit(1)
+
 
 def usage():
-    return "%s [PRob ip address]"%sys.argv[0]
+    return "%s [PRob ip address]" % sys.argv[0]
+
 
 if __name__ == "__main__":
-  if len(sys.argv) == 2:
-    ip = sys.argv[1] 
-  else:
-    print( usage() )
-    sys.exit(1)
-  try:
-    myp = SockJSClient('/socket', ip, 8888)
-    myp.connect()
-    start_server()
+    if len(sys.argv) == 2:
+        ip = sys.argv[1]
+    else:
+        print(usage())
+        sys.exit(1)
+    try:
+        myp = SockJSClient('/socket', ip, 8888)
+        myp.connect()
+        start_server()
 
-  except:
-    print("Could not connect to myP at: ", ip)
-    # traceback.print_exc()
-    # raise
+    except:
+        print("Could not connect to myP at: ", ip)
+        # traceback.print_exc()
+        # raise
 
-  finally:
-    myp.disconnect()
-    print("Server closed")
+    finally:
+        myp.disconnect()
+        print("Server closed")
