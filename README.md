@@ -1,6 +1,24 @@
 # prob_interface
 A repository for establishing an interface to the P-Rob in ROS.
 
+## Setup
+Clone the 'prob_interface' repository into your catkin workspace 'src' folder and run `catkin_make`.
+Make sure the PRob is connected to the same network as our machine and run a ROS master.
+In a second terminal, source first the your catkin workspace (ex. `~/catkin_ws/devel/setup.bash`) and run
+```
+rosrun prob_interface prob_server.py <PROB_IP_ADDRESSS>
+```
+Replace `<PROB_IP_ADDRESSS>`with the IP of the robot. Now the robot is ready to be controlled through ROS service calls.
+
+To initialize and calibrate the robot, you may run in a third terminal
+```
+rosrun prob_interface prob_initialize.py <CALIBRATE_FLAG>
+```
+If the robot should be calibrated, set `CALIBRATE_FLAG` to `0`, otherwise to `-1`. After calibrating the robot, you may have a look into the demo script of the repository or execute it:
+```
+rosrun prob_interface client_function_demo.py
+```
+
 ## Packages
 **prob_interface** - base class/package contains the prob_server that builds the connection to the P-Rob and handles all the traffic between ROS and the P-Rob
 
