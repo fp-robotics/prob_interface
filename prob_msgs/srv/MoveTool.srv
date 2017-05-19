@@ -4,8 +4,6 @@ float32 z
 float32[] orientation
 float32 velocity
 float32 acceleration
-float32 velocity_rot
-float32 acceleration_rot
 bool block
 bool relative
 string frame

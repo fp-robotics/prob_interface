@@ -15,27 +15,44 @@ robot_arm = 0
 
 # myP function handles
 def handle_move_joint(req):
-    print(
-    "move_joint(%s, %s, %s, %s, %s, %s)" % (req.axis, req.deg, req.vel, req.acc, bool(req.block), bool(req.relative)))
-    robot_arm.move_joint(req.axis, req.deg, req.vel, req.acc, bool(req.block), bool(req.relative))
+    if float(req.vel) == 0.0:
+        req.vel = None
+    if float(req.acc) == 0.0:
+        req.acc = None
+
+    print("move_joint(%s, %s, %s, %s, %s, %s)" % (req.axis, req.deg, req.vel, req.acc,
+                                                  bool(req.block), bool(req.relative)))
+    robot_arm.move_joint(req.axis, req.deg, req.vel, req.acc,
+                         bool(req.block), bool(req.relative))
     return 1
 
 
 def handle_move_tool(req):
-    print("move_tool(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" % (
-    req.x, req.y, req.z, req.orientation, req.velocity, req.acceleration, req.velocity_rot, req.acceleration_rot,
-    bool(req.block), bool(req.relative), req.frame))
-    robot_arm.move_tool(req.x, req.y, req.z, req.orientation, req.velocity, req.acceleration, req.velocity_rot,
-                        req.acceleration_rot, bool(req.block), bool(req.relative), req.frame)
+    req.orientation = list(req.orientation)
+    if float(req.velocity) == 0.0:
+        req.velocity = None
+    if float(req.acceleration) == 0.0:
+        req.acceleration = None
+
+    if req.frame is "":
+        req.frame = None
+
+    print("move_tool(%s, %s, %s, %s, %s, %s, %s, %s, %s)" % (
+        req.x, req.y, req.z, req.orientation, req.velocity, req.acceleration,
+        bool(req.block), bool(req.relative), '\"' + req.frame + '\"'))
+
+    robot_arm.move_tool(req.x, req.y, req.z, req.orientation, req.velocity, req.acceleration,
+                        bool(req.block), bool(req.relative), req.frame)
+
     return 1
 
 
 def handle_move_to_pose(req):
-    print("move_to_pose(%s, %s, %s, %s)" % (req.name, req.vel, req.acc, req.block))
-    if int(req.vel) is 0:
+    if float(req.vel) == 0.0:
         req.vel = None
-    if int(req.acc) is 0:
+    if float(req.acc) == 0.0:
         req.acc = None
+    print("move_to_pose(%s, %s, %s, %s)" % (req.name, req.vel, req.acc, req.block))
 
     robot_arm.move_to_pose(req.name, req.vel, req.acc, req.block)
     return 1
@@ -81,13 +98,13 @@ def handle_test_script(req):
 
 
 def handle_execute_script(req):
-    print("execute_script(%s)" % (req.script_id))
+    print("execute_script(%s)" % req.script_id)
     robot_arm.execute_script(req.script_id)
     return 1
 
 
 def handle_release(req):
-    print("release(%s)" % (req.joint_id))
+    print("release(%s)" % req.joint_id)
     print("Type joint_id: ", type(req.joint_id))
     robot_arm.release(req.joint_id)
     return 1
@@ -112,14 +129,12 @@ def handle_close_gripper(req):
 
 
 def handle_get_status_info(req):
-    print("get_status_info()")
     status = robot_arm.get_status_info()
     print status
     return status
 
 
 def handle_get_connection_info(req):
-    print("get_connection_info()")
     connection_info = robot_arm.get_connection_info()
     return connection_info
 
@@ -430,7 +445,6 @@ class RobotHandler:
         scripts = myp.get_status("scripts")
         return scripts
 
-    # TODO
     @staticmethod
     def save_script(script_name="", script_code=""):
         # edit script
@@ -587,8 +601,6 @@ def start_server():
         srv_get_actuator_release_state = rospy.Service('get_actuator_release_state', GetBoolArray,
                                                        handle_get_actuator_release_state)
         srv_get_all_status = rospy.Service('get_all_status', GetInfoString, handle_get_all_status)
-
-        # srv_get_gripper_angle = rospy.Service('get_gripper_angle', Empty, handle_get_gripper_angle)
 
         # Connection to myP XMLRPC server
         robot_arm = RobotHandler()

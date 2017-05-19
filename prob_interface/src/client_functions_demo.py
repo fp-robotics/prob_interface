@@ -16,19 +16,23 @@ if __name__ == "__main__":
         print("App Output: ", get_application_output())
         print("Release state: ", get_actuator_release_state())
 
+        move_tool(-700, 0, 820, [0, 0, 180], relative=False, frame="base")
+        wait_for_robot()
+
         #print(get_all_status())
 
+        move_joint(5, 0)
+        wait_for_robot()
         move_to_pose('back_pose')
+        wait_for_robot()
 
-        """
         move_joint(5,90,60,90)
         wait_for_robot()
         
         move_joint(5,-90,60,90)
         wait_for_robot()
         
-        #	move_tool(10,10,10,relative=True,frame="tool")
-        #	wait_for_robot()
+
         
         open_gripper(20,45,60)
         wait_for_robot()
@@ -39,12 +43,11 @@ if __name__ == "__main__":
         
         
         print("Release")
-        release('[6]')
+        release()
         rospy.sleep(10)
-        print("Hold
+        print("Hold")
         hold()
 
-        """
     else:
         print('Robot is not ready to execute commands. Something with initialization and calibration went wrong.')
         print(get_message_info())

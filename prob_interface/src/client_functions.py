@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import sys
 import time
 import rospy
 from prob_msgs.srv import *
@@ -19,13 +18,12 @@ def move_joint(axis, deg, velocity=None, acceleration=None, block=True, relative
 
 
 # ROS wrapper for move_tool
-def move_tool(x, y, z, orientation=None, velocity=None, acceleration=None, velocity_rot=None, acceleration_rot=None,
-              block=True, relative=None, frame="base"):
+def move_tool(x, y, z, orientation=None, velocity=None, acceleration=None,
+              block=True, relative=False, frame="base"):
     rospy.wait_for_service('move_tool')
     try:
         move_tool_proxy = rospy.ServiceProxy('move_tool', MoveTool)
-        resp1 = move_tool_proxy(x, y, z, orientation, velocity, acceleration, velocity_rot, acceleration_rot, block, relative,
-                          frame)
+        resp1 = move_tool_proxy(x, y, z, orientation, velocity, acceleration, block, relative, frame)
         return resp1.res
     except rospy.ServiceException, e:
         print "Service call failed: %s" % e
