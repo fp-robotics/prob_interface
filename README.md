@@ -87,7 +87,7 @@ A Node for initializing and calibrating the robot
 
 #### Parameters
 * `model` (String) - Model of the Robot that's connected. ex: 'PRob2R', 'PRob1R', 'PRob1Uplus', 'PRob1U'
-* `use_existing` (Boolean) - if True: Calibrate with existing values, if false: calibrate the robot -> movement
+* `script_id` (int) - -1: Calibrate with existing values, 0: calibrate the robot -> movement
 * `channel_name` (String) - only needed if connected to a robot with usb, channel name is the device path of the usb. ex: '/dev/pcanusb2'
 
 #### Run
